@@ -1,0 +1,34 @@
+#!/bin/sh
+
+set -eu
+export LC_ALL=C
+
+DOCKER=$(command -v docker 2>/dev/null)
+
+IMAGE_REGISTRY=docker.io
+IMAGE_NAMESPACE=hectormolinero
+IMAGE_PROJECT=volume-helper
+IMAGE_TAG=latest
+IMAGE_NAME=${IMAGE_REGISTRY:?}/${IMAGE_NAMESPACE:?}/${IMAGE_PROJECT:?}:${IMAGE_TAG:?}
+
+VOLUME=${1:?}
+SOURCE=${2:-${1:?}.tgz}
+
+if [ ! -f "${SOURCE}" ]; then
+	>&2 printf -- '%s\n' "\"${SOURCE}\" file doesn't exist!"
+	exit 1
+fi
+
+CMD=$(cat <<-'EOF'
+	export LC_ALL=C;
+	find /mnt/volume/ -mindepth 1 -delete;
+	gzip -dn | tar \
+		--checkpoint=100000 --checkpoint-action=echo="%{}T" --totals \
+		--preserve-permissions --acls --selinux --xattrs --same-owner \
+		--extract --file=- --directory /mnt/volume/
+EOF
+)
+
+exec "${DOCKER:?}" run --rm --interactive --log-driver none \
+	--mount type=volume,src="${VOLUME:?}",dst=/mnt/volume/ \
+	"${IMAGE_NAME:?}" sh -eu -c "${CMD:?}" < "${SOURCE:?}"

@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -eu
+export LC_ALL=C
+
+DOCKER=$(command -v docker 2>/dev/null)
+
+IMAGE_REGISTRY=docker.io
+IMAGE_NAMESPACE=hectormolinero
+IMAGE_PROJECT=volume-helper
+IMAGE_TAG=latest
+IMAGE_NAME=${IMAGE_REGISTRY:?}/${IMAGE_NAMESPACE:?}/${IMAGE_PROJECT:?}:${IMAGE_TAG:?}
+
+VOLUME=${1:?}
+
+volumeExists() { "${DOCKER:?}" volume ls -f name="${1:?}" --format '{{.Name}}' | grep -Fxq "${1:?}"; }
+
+if ! volumeExists "${VOLUME:?}"; then
+	>&2 printf -- '%s\n' "\"${VOLUME}\" volume doesn't exist!"
+	exit 1
+fi
+
+exec "${DOCKER:?}" run --rm --tty --interactive --log-driver none \
+	--mount type=volume,src="${VOLUME:?}",dst=/mnt/volume/ --workdir /mnt/volume/ \
+	"${IMAGE_NAME:?}" bash

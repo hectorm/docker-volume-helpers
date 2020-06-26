@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -eu
+export LC_ALL=C
+
+BASE_URL='https://raw.githubusercontent.com/hectorm/docker-volume-helpers/master'
+BIN_DIR=/usr/local/bin
+
+curl \
+	--proto '=https' --tlsv1.2 \
+	--output "${BIN_DIR:?}/docker-volume-#1" \
+	"${BASE_URL:?}/bin/docker-volume-{backup,restore,explore,helpers-upgrade}"
+
+chown root:root "${BIN_DIR:?}"/docker-volume*
+chmod 755 "${BIN_DIR:?}"/docker-volume*
