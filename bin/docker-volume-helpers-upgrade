@@ -4,12 +4,21 @@ set -eu
 export LC_ALL=C
 
 BASE_URL='https://raw.githubusercontent.com/hectorm/docker-volume-helpers/master'
+
 BIN_DIR=/usr/local/bin
 
-curl \
-	--proto '=https' --tlsv1.2 \
-	--output "${BIN_DIR:?}/docker-volume-#1" \
-	"${BASE_URL:?}/bin/docker-volume-{backup,restore,explore,helpers-upgrade}"
+TMP_DIR=$(mktemp -d)
+trap 'rm -rf "${TMP_DIR:?}"; trap - EXIT' EXIT TERM INT HUP
 
-chown root:root "${BIN_DIR:?}"/docker-volume*
-chmod 755 "${BIN_DIR:?}"/docker-volume*
+main() {
+	curl \
+		--proto '=https' --tlsv1.2 -L \
+		-o "${TMP_DIR:?}"/'#1-#2' "${BASE_URL:?}"/bin/'{docker-volume}-{backup,restore,explore}' \
+		-o "${TMP_DIR:?}"/'#1-#2' "${BASE_URL:?}"/bin/'{docker-volume}-{helpers-upgrade}'
+
+	mv -f "${TMP_DIR:?}"/* "${BIN_DIR:?}"/
+	chown root:root "${BIN_DIR:?}"/docker-volume*
+	chmod 755 "${BIN_DIR:?}"/docker-volume*
+}
+
+main "$@"
