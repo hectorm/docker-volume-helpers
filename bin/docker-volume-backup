@@ -17,7 +17,7 @@ TARGET=${2:-${1:?}.tgz}
 volumeExists() { "${DOCKER:?}" volume ls -f name="${1:?}" --format '{{.Name}}' | grep -Fxq "${1:?}"; }
 
 if ! volumeExists "${VOLUME:?}"; then
-	>&2 printf -- '%s\n' "\"${VOLUME}\" volume doesn't exist!"
+	>&2 printf -- '%s\n' "\"${VOLUME:?}\" volume doesn't exist!"
 	exit 1
 fi
 
