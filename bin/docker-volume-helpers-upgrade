@@ -8,7 +8,7 @@ BASE_URL='https://raw.githubusercontent.com/hectorm/docker-volume-helpers/master
 BIN_DIR=/usr/local/bin
 
 TMP_DIR=$(mktemp -d)
-trap 'rm -rf "${TMP_DIR:?}"; trap - EXIT' EXIT TERM INT HUP
+trap 'rm -rf "${TMP_DIR:?}"; trap - EXIT; exit 0' EXIT TERM INT HUP
 
 main() {
 	curl \
