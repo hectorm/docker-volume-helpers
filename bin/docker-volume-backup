@@ -12,25 +12,21 @@ IMAGE_TAG=latest
 IMAGE_NAME=${IMAGE_REGISTRY:?}/${IMAGE_NAMESPACE:?}/${IMAGE_PROJECT:?}:${IMAGE_TAG:?}
 
 VOLUME=${1:?}
-TARGET=${2:-${1:?}.tgz}
+TARGET=${2:-${1:?}.tzst}
 
-volumeExists() { "${DOCKER:?}" volume ls -f name="${1:?}" --format '{{.Name}}' | grep -Fxq "${1:?}"; }
-
-if ! volumeExists "${VOLUME:?}"; then
+if ! "${DOCKER:?}" volume ls -f name="${VOLUME:?}" --format '{{.Name}}' | grep -Fxq "${VOLUME:?}"; then
 	>&2 printf -- '%s\n' "\"${VOLUME:?}\" volume doesn't exist!"
 	exit 1
 fi
 
-CMD=$(cat <<-'EOF'
-	export LC_ALL=C;
-	tar \
-		--checkpoint=100000 --checkpoint-action=echo="%{}T" --totals \
-		--preserve-permissions --acls --selinux --xattrs --numeric-owner --sort=name \
-		--format=posix --pax-option=exthdr.name=%d/PaxHeaders/%f,atime:=0,ctime:=0 \
-		--create --file=- --directory /mnt/volume/ . | gzip -4n
-EOF
-)
-
-exec "${DOCKER:?}" run --rm --log-driver none \
+exec "${DOCKER:?}" run --rm --log-driver none --network none \
 	--mount type=volume,src="${VOLUME:?}",dst=/mnt/volume/,ro \
-	"${IMAGE_NAME:?}" sh -eu -c "${CMD:?}" > "${TARGET:?}"
+	--attach STDOUT --attach STDERR \
+	"${IMAGE_NAME:?}" sh -euc "$(cat <<-'EOF'
+		tar \
+			--checkpoint=100000 --checkpoint-action=echo="%{}T" --totals \
+			--preserve-permissions --acls --selinux --xattrs --numeric-owner --sort=name \
+			--format=posix --pax-option=exthdr.name=%d/PaxHeaders/%f,atime:=0,ctime:=0 \
+			--create --file=- --directory /mnt/volume/ . | zstd -T0 -1
+	EOF
+	)" > "${TARGET:?}"

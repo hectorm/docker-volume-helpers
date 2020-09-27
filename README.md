@@ -10,12 +10,12 @@ curl --proto '=https' --tlsv1.2 'https://raw.githubusercontent.com/hectorm/docke
 
 ### Backup
 ```sh
-docker-volume-backup VOLUME [TARGET.tgz]
+docker-volume-backup VOLUME [TARGET.tzst]
 ```
 
 ### Restore
 ```sh
-docker-volume-restore VOLUME [SOURCE.tgz]
+docker-volume-restore VOLUME [SOURCE.tzst]
 ```
 
 ### Explore
