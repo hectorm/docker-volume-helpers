@@ -15,7 +15,7 @@ VOLUME=${1:?}
 SOURCE=${2:-${1:?}.tzst}
 
 if [ ! -f "${SOURCE:?}" ]; then
-	>&2 printf -- '%s\n' "\"${SOURCE:?}\" file doesn't exist!"
+	>&2 printf '%s\n' "\"${SOURCE:?}\" file doesn't exist!"
 	exit 1
 fi
 

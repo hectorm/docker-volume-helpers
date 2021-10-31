@@ -15,7 +15,7 @@ VOLUME=${1:?}
 TARGET=${2:-${1:?}.tzst}
 
 if ! "${DOCKER:?}" volume ls -f name="${VOLUME:?}" --format '{{.Name}}' | grep -Fxq "${VOLUME:?}"; then
-	>&2 printf -- '%s\n' "\"${VOLUME:?}\" volume doesn't exist!"
+	>&2 printf '%s\n' "\"${VOLUME:?}\" volume doesn't exist!"
 	exit 1
 fi
 

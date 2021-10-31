@@ -14,7 +14,7 @@ IMAGE_NAME=${IMAGE_REGISTRY:?}/${IMAGE_NAMESPACE:?}/${IMAGE_PROJECT:?}:${IMAGE_T
 VOLUME=${1:?}
 
 if ! "${DOCKER:?}" volume ls -f name="${VOLUME:?}" --format '{{.Name}}' | grep -Fxq "${VOLUME:?}"; then
-	>&2 printf -- '%s\n' "\"${VOLUME:?}\" volume doesn't exist!"
+	>&2 printf '%s\n' "\"${VOLUME:?}\" volume doesn't exist!"
 	exit 1
 fi
 
