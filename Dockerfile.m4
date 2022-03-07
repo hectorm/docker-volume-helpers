@@ -15,6 +15,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 		findutils \
 		gzip \
 		nano \
+		rsync \
 		tar \
 		zstd \
 	&& rm -rf /var/lib/apt/lists/*
