@@ -32,7 +32,6 @@ main() {
 		chmod 644 "${SYSTEMDUNIT_DIR:?}"/docker-volume*
 
 		systemctl daemon-reload 2>/dev/null ||:
-		systemctl enable --now docker-volume-helpers-upgrade.timer 2>/dev/null ||:
 	fi
 }
 
