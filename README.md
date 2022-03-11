@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-curl --proto '=https' --tlsv1.2 'https://raw.githubusercontent.com/hectorm/docker-volume-helpers/master/bin/docker-volume-helpers-upgrade' | sudo sh
+curl --proto '=https' --tlsv1.3 'https://raw.githubusercontent.com/hectorm/docker-volume-helpers/master/bin/docker-volume-helpers-upgrade' | sudo sh
 ```
 
 ## Usage

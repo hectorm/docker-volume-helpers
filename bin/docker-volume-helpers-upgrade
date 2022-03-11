@@ -14,7 +14,7 @@ trap 'ret="$?"; rm -rf -- "${TMP_DIR:?}"; trap - EXIT; exit "${ret:?}"' EXIT TER
 
 main() {
 	mkdir "${TMP_DIR:?}"/bin/
-	curl --proto '=https' --tlsv1.2 -L \
+	curl --proto '=https' --tlsv1.3 -L \
 		-o "${TMP_DIR:?}"/bin/'#1-#2' "${BASE_URL:?}"/bin/'{docker-volume}-{backup,restore,explore}' \
 		-o "${TMP_DIR:?}"/bin/'#1-#2' "${BASE_URL:?}"/bin/'{docker-volume}-{helpers-upgrade}'
 
@@ -24,7 +24,7 @@ main() {
 
 	if [ -d "${SYSTEMDUNIT_DIR:?}" ]; then
 		mkdir "${TMP_DIR:?}"/systemd/
-		curl --proto '=https' --tlsv1.2 -L \
+		curl --proto '=https' --tlsv1.3 -L \
 			-o "${TMP_DIR:?}"/systemd/'#1.#2' "${BASE_URL:?}"/systemd/'{docker-volume-helpers-upgrade}.{service,timer}'
 
 		mv -f "${TMP_DIR:?}"/systemd/* "${SYSTEMDUNIT_DIR:?}"/
