@@ -22,6 +22,14 @@ main() {
 	chown root:root "${BIN_DIR:?}"/docker-volume-*
 	chmod 755 "${BIN_DIR:?}"/docker-volume-*
 
+	if command -v semanage >/dev/null 2>&1 && command -v restorecon >/dev/null 2>&1; then
+		for f in "${BIN_DIR:?}"/docker-volume-*; do
+			if semanage fcontext -at bin_t "${f:?}" 2>/dev/null; then
+				restorecon -Fv "${f:?}"
+			fi
+		done
+	fi
+
 	if [ -d "${SYSTEMDUNIT_DIR:?}" ]; then
 		mkdir "${TMP_DIR:?}"/systemd/
 		curl --proto '=https' --tlsv1.3 -L \
