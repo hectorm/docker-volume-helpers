@@ -6,7 +6,6 @@ export LC_ALL=C
 BASE_URL='https://raw.githubusercontent.com/hectorm/docker-volume-helpers/master'
 
 BIN_DIR=/usr/local/bin
-SYSTEMDUNIT_DIR=/etc/systemd/system
 
 TMP_DIR=$(mktemp -d)
 # shellcheck disable=SC2154
@@ -27,18 +26,6 @@ main() {
 			semanage fcontext -at bin_t "${f:?}" 2>/dev/null ||:
 			restorecon -Fv "${f:?}"
 		done
-	fi
-
-	if [ -d "${SYSTEMDUNIT_DIR:?}" ]; then
-		mkdir "${TMP_DIR:?}"/systemd/
-		curl --proto '=https' --tlsv1.3 -L \
-			-o "${TMP_DIR:?}"/systemd/'#1.#2' "${BASE_URL:?}"/systemd/'{docker-volume-helpers-upgrade}.{service,timer}'
-
-		mv -f "${TMP_DIR:?}"/systemd/* "${SYSTEMDUNIT_DIR:?}"/
-		chown root:root "${SYSTEMDUNIT_DIR:?}"/docker-volume-helpers-upgrade.*
-		chmod 644 "${SYSTEMDUNIT_DIR:?}"/docker-volume-helpers-upgrade.*
-
-		systemctl daemon-reload 2>/dev/null ||:
 	fi
 }
 
