@@ -1,3 +1,9 @@
+> **Warning**  
+> This project has been deprecated in favour of the [Docker Volumex plugin](https://github.com/hectorm/docker-volumex).
+
+<details>
+<summary>Original readme</summary>
+
 # Backup, restore and explore Docker volumes
 
 ## Installation
@@ -22,3 +28,5 @@ docker-volume-restore VOLUME [SOURCE.tzst]
 ```sh
 docker-volume-explore VOLUME
 ```
+
+</details>
